@@ -1,0 +1,937 @@
+import { parse } from 'postcss';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import Select from 'react-select';
+
+const SurveyForm = () => {
+  const { id_organizacion } = useParams();
+  // Estado inicial del formulario
+  const [formData, setFormData] = useState({
+    apellidos: '',
+    nombres: '',
+    edad: '',
+    id_genero: '',
+    id_rol_organizacion: '',
+    anos_organizacion: '',
+    horas_semanales: '',
+    id_porcentaje_trabajo_remoto: '',
+    id_nivel_nivel_placer_interes: '',
+    id_nivel_tristeza_desesperanza: '',
+    id_nivel_problemas_sueno: '',
+    id_nivel_disminucion_energia: '',
+    id_nivel_cambio_apetito: '',
+    id_nivel_decepcion_personal: '',
+    id_nivel_problemas_concentracion: '',
+    id_nivel_movimientos_involuntarios: '',
+    id_nivel_tentacion_no_levantarse: '',
+    id_frecuencia_limitacion_convivencia: '',
+    id_frecuencia_desacreditar_profesionalismo: '',
+    id_frecuencia_desprestigio: '',
+    id_frecuencia_informar_mal_permanencia: '',
+    id_nivel_estudios: '',
+    id_estado_nacimiento: '',
+    id_estado_mas_anos: '',
+    id_estado_civil_padres: '',
+    id_familiares_diabetes: '',
+    id_familiares_cancer: '',
+    id_familiares_cerebrovascular: ''
+  });
+
+  // Opciones para los campos de selección - acá defines todos los mapeos
+  const opciones = {
+    genero: [
+      { id: 1, label: 'Femenino' },
+      { id: 2, label: 'Masculino' },
+      { id: 3, label: 'No binario' },
+      { id: 4, label: 'Prefiero no decir' }
+    ],
+    rol_organizacion: [
+      { id: 1, label: 'Ejecutivos en jefe' },
+      { id: 2, label: 'Gerentes generales y de operaciones' },
+      { id: 3, label: 'Gerentes de servicios administrativos' },
+      { id: 4, label: 'Gerentes de recursos humanos' },
+      { id: 5, label: 'Gerentes de publicidad y promociones' },
+      { id: 6, label: 'Gerentes de compras' },
+      { id: 7, label: 'Gerentes de compensaciones y beneficios' },
+      { id: 8, label: 'Gerentes de relaciones públicas y recaudación de fondos' },
+      { id: 9, label: 'Gerentes de transporte, almacenamiento y distribución' },
+      { id: 10, label: 'Gerentes financieros' },
+      { id: 11, label: 'Directores de servicios médicos y de salud' },
+      { id: 12, label: 'Directores de manejo de emergencias' },
+      { id: 13, label: 'Gerentes, misceláneos' },
+      { id: 14, label: 'Directores de servicios sociales y comunitarios' },
+      { id: 15, label: 'Administradores educativos' },
+      { id: 16, label: 'Gerentes de capacitación y desarrollo' },
+      { id: 18, label: 'Oficiales superiores de las fuerzas armadas de operaciones especiales y tácticas' },
+      { id: 19, label: 'Jueces, magistrados y otros trabajadores judiciales' },
+      { id: 20, label: 'Gerentes de establecimientos agrícolas, ganaderos y de otras actividades agrícolas' },
+      { id: 21, label: 'Gerentes de producción industrial' },
+      { id: 22, label: 'Gerentes, misceláneos' },
+      { id: 23, label: 'Gerentes de construcción' },
+      { id: 24, label: 'Directores de arquitectura e ingeniería' },
+      { id: 25, label: 'Administradores educativos' },
+      { id: 26, label: 'Gerentes de capacitación y desarrollo' },
+      { id: 27, label: 'Asesores en gerencia de granjas y hogares' },
+      { id: 28, label: 'Trabajadores de recursos humanos' },
+      { id: 29, label: 'Especialistas en logística' },
+      { id: 30, label: 'Analistas de gestión' },
+      { id: 31, label: 'Compradores y agentes de compras' },
+      { id: 32, label: 'Especialistas en compensaciones, beneficios y análisis ocupacional' },
+      { id: 33, label: 'Analistas de investigación de mercado y especialistas en mercadeo' },
+      { id: 34, label: 'Investigadores de encuestas' },
+      { id: 35, label: 'Especialistas en relaciones públicas' },
+      { id: 36, label: 'Contadores y auditores' },
+      { id: 37, label: 'Analistas de presupuesto' },
+      { id: 38, label: 'Asesores de crédito y oficiales de préstamo' },
+      { id: 39, label: 'Examinadores, cobradores y preparadores de impuestos y agentes de rentas' },
+      { id: 40, label: 'Analistas y asesores financieros' },
+      { id: 41, label: 'Examinadores financieros' },
+      { id: 42, label: 'Especialistas financieros, misceláneos' },
+      { id: 43, label: 'Economistas' },
+      { id: 44, label: 'Científicos sociales y trabajadores relacionados, misceláneos' },
+      { id: 45, label: 'Sociólogos' },
+      { id: 46, label: 'Planificadores urbanos y regionales' },
+      { id: 47, label: 'Abogados y oficiales jurídicos' },
+      { id: 48, label: 'Asistentes legales y asistentes de abogados' },
+      { id: 49, label: 'Psicólogos' },
+      { id: 50, label: 'Trabajadores sociales' },
+      { id: 51, label: 'Archiveros, curadores y técnicos de museo' },
+      { id: 52, label: 'Bibliotecarios' },
+      { id: 53, label: 'Clérigos' },
+      { id: 54, label: 'Escritores, redactores y editores' },
+      { id: 55, label: 'Escritores, redactores y editores' },
+      { id: 56, label: 'Analistas, reporteros y corresponsales de noticias' },
+      { id: 57, label: 'Trabajadores de medios de difusión y comunicación, misceláneos' },
+      { id: 58, label: 'Artistas y trabajadores relacionados' },
+      { id: 59, label: 'Diseñadores' },
+      { id: 60, label: 'Astrónomos y físicos' },
+      { id: 61, label: 'Científicos físicos, misceláneos' },
+      { id: 62, label: 'Actuarios' },
+      { id: 63, label: 'Estadísticos' },
+      { id: 64, label: 'Matemáticos' },
+      { id: 65, label: 'Analistas de operaciones de investigación' },
+      { id: 66, label: 'Ocupaciones relacionadas con las ciencias matemáticas, misceláneos' },
+      { id: 67, label: 'Científicos especializados en biología' },
+      { id: 68, label: 'Tecnólogos y técnicos de laboratorio clínico' },
+      { id: 69, label: 'Científicos del medioambiente y de la geociencia' },
+      { id: 70, label: 'Científicos especializados en ciencias biológicas, misceláneos' },
+      { id: 71, label: 'Químicos y científicos de materiales' },
+      { id: 72, label: 'Científicos atmosféricos y espaciales' },
+      { id: 73, label: 'Científicos especializados en conservación y silvicultores' },
+      { id: 74, label: 'Científicos especializados en agricultura y alimentos' },
+      { id: 75, label: 'Ingenieros agrónomos' },
+      { id: 76, label: 'Científicos especializados en agricultura y alimentos' },
+      { id: 77, label: 'Veterinarios' },
+      { id: 78, label: 'Científicos especializados en conservación y silvicultores' },
+      { id: 79, label: 'Científicos especializados en biología' },
+      { id: 80, label: 'Ingenieros eléctricos y electrónicos' },
+      { id: 81, label: 'Ingenieros mecánicos' },
+      { id: 82, label: 'Ingenieros eléctricos y electrónicos' },
+      { id: 83, label: 'Ingenieros químicos' },
+      { id: 84, label: 'Ingenieros mecánicos' },
+      { id: 85, label: 'Ingenieros aeroespaciales' },
+      { id: 86, label: 'Ingenieros marítimos y arquitectos navales' },
+      { id: 87, label: 'Ingenieros industriales, incluye ingenieros sanitarios y de seguridad' },
+      { id: 88, label: 'Ingenieros de minería y geología, incluye a los ingenieros de seguridad minera' },
+      { id: 89, label: 'Ingenieros petroleros' },
+      { id: 90, label: 'Ingenieros de materiales' },
+      { id: 91, label: 'Ingenieros civiles' },
+      { id: 92, label: 'Agrimensores, cartógrafos y fotogrametristas' },
+      { id: 93, label: 'Ingenieros mecánicos' },
+      { id: 94, label: 'Agrimensores, cartógrafos y fotogrametristas' },
+      { id: 95, label: 'Arquitectos, excepto navales' },
+      { id: 96, label: 'Planificadores urbanos y regionales' },
+      { id: 97, label: 'Investigadores de ciencias de la computación e información' },
+      { id: 98, label: 'Analistas de computación e información' },
+      { id: 99, label: 'Programadores y diseñadores de programas software' },
+      { id: 100, label: 'Ingenieros de computadoras' },
+      { id: 101, label: 'Administradores de bases de datos y sistemas y diseñadores de redes informáticas' },
+      { id: 102, label: 'Especialistas en apoyo técnico de computadoras' },
+      { id: 103, label: 'Ingenieros de computadoras' },
+      { id: 104, label: 'Ingenieros eléctricos y electrónicos' },
+      { id: 105, label: 'Funcionarios de cumplimiento' },
+      { id: 106, label: 'Consejeros' },
+      { id: 107, label: 'Maestros de escuela secundaria' },
+      { id: 108, label: 'Maestros de escuela primaria y escuela de nivel medio' },
+      { id: 109, label: 'Maestros e instructores de educación básica, secundaria y de alfabetización para adultos' },
+      { id: 110, label: 'Maestros de nivel preescolar y jardín de infantes' },
+      { id: 111, label: 'Profesores universitarios y de enseñanza superior' },
+      { id: 112, label: 'Médicos y cirujanos' },
+      { id: 113, label: 'Asistentes médicos' },
+      { id: 114, label: 'Médicos y cirujanos' },
+      { id: 115, label: 'Dentistas' },
+      { id: 116, label: 'Ingenieros biomédicos' },
+      { id: 117, label: 'Optómetras' },
+      { id: 118, label: 'Dietistas y nutricionistas' },
+      { id: 119, label: 'Ingenieros industriales, incluye ingenieros sanitarios y de seguridad' },
+      { id: 120, label: 'Científicos médicos' },
+      { id: 121, label: 'Profesionales de diagnóstico y tratamiento médico, misceláneos' },
+      { id: 122, label: 'Enfermeros anestesistas' },
+      { id: 123, label: 'Enfermeros de partos' },
+      { id: 124, label: 'Enfermeros médicos' },
+      { id: 125, label: 'Enfermeros graduados' },
+      { id: 126, label: 'Terapistas' },
+      { id: 127, label: 'Audiológos' },
+      { id: 128, label: 'Farmacéuticos' },
+      { id: 129, label: 'Investigadores de encuestas' },
+      { id: 130, label: 'Estimadores de costos' },
+      { id: 131, label: 'Recaudadores de fondos' },
+      { id: 132, label: 'Oficinistas auxiliares de compras' },
+      { id: 133, label: 'Asistentes de recursos humanos, excepto de nómina y de registro de horas' },
+      { id: 134, label: 'Oficinistas de producción, planificación y expedición' },
+      { id: 135, label: 'Oficinistas de procesamiento de reclamaciones y pólizas de seguro' },
+      { id: 136, label: 'Oficinistas de nómina y de registro de horas trabajadas' },
+      { id: 137, label: 'Analistas de crédito' },
+      { id: 138, label: 'Asesores de crédito y oficiales de préstamo' },
+      { id: 139, label: 'Examinadores, cobradores y preparadores de impuestos y agentes de rentas' },
+      { id: 140, label: 'Autorizadores, verificadores y empleados de crédito' },
+      { id: 141, label: 'Entrevistadores y empleados de préstamos financieros' },
+      { id: 142, label: 'Oficinistas de corretaje' },
+      { id: 143, label: 'Empleados de teneduría de libros, contabilidad y auditoría' },
+      { id: 144, label: 'Oficinistas de facturación y registro de facturas' },
+      { id: 145, label: 'Agentes de carga y flete' },
+      { id: 146, label: 'Ajustadores, tasadores, examinadores e investigadores de reclamaciones' },
+      { id: 147, label: 'Tasadores y especialistas en valoración de bienes raíces' },
+      { id: 148, label: 'Propietario de negocio' },
+      { id: 149, label: 'Otro' }
+    ],
+    estados_mexico: [
+      { id: 1, label: 'Aguascalientes' },
+      { id: 2, label: 'Baja California' },
+      { id: 3, label: 'Baja California Sur' },
+      { id: 4, label: 'Campeche' },
+      { id: 5, label: 'Chiapas' },
+      { id: 6, label: 'Chihuahua' },
+      { id: 7, label: 'Ciudad de México' },
+      { id: 8, label: 'Coahuila de Zaragoza' },
+      { id: 9, label: 'Colima' },
+      { id: 10, label: 'Durango' },
+      { id: 11, label: 'Estado de México' },
+      { id: 12, label: 'Guanajuato' },
+      { id: 13, label: 'Guerrero' },
+      { id: 14, label: 'Hidalgo' },
+      { id: 15, label: 'Jalisco' },
+      { id: 16, label: 'Michoacán de Ocampo' },
+      { id: 17, label: 'Morelos' },
+      { id: 18, label: 'Nayarit' },
+      { id: 19, label: 'Nuevo León' },
+      { id: 20, label: 'Oaxaca' },
+      { id: 21, label: 'Puebla' },
+      { id: 22, label: 'Querétaro' },
+      { id: 23, label: 'Quintana Roo' },
+      { id: 24, label: 'San Luis Potosí' },
+      { id: 25, label: 'Sinaloa' },
+      { id: 26, label: 'Sonora' },
+      { id: 27, label: 'Tabasco' },
+      { id: 28, label: 'Tamaulipas' },
+      { id: 29, label: 'Tlaxcala' },
+      { id: 30, label: 'Veracruz de Ignacio de la Llave' },
+      { id: 31, label: 'Yucatán' },
+      { id: 32, label: 'Zacatecas' }
+    ],
+    porcentaje_remoto: [
+      { id: 1, label: '0%' },
+      { id: 2, label: '10%' },
+      { id: 3, label: '25%' },
+      { id: 4, label: '50%' },
+      { id: 5, label: '75%' },
+      { id: 6, label: '100%' },
+    ],
+    nivel_estudios: [
+      { id: 1, label: 'Primaria no concluida' },
+      { id: 2, label: 'Primaria' },
+      { id: 3, label: 'Secundaria no concluida' },
+      { id: 4, label: 'Secundaria' },
+      { id: 5, label: 'Bachillerato no concluido' },
+      { id: 6, label: 'Bachillerato' },
+      { id: 7, label: 'Licenciatura no terminada' },
+      { id: 8, label: 'Licenciatura' },
+      { id: 9, label: 'Posgrado' }
+    ],
+    estado_civil_padres: [
+      { id: 1, label: 'Soltera/o' },
+      { id: 2, label: 'Casada/o' },
+      { id: 3, label: 'Divorciada/o' },
+      { id: 4, label: 'Separada/o' },
+      { id: 5, label: 'Viuda/o' }
+    ],
+    respuestas_si_no: [
+      { id: 1, label: 'Sí' },
+      { id: 2, label: 'No' },
+      { id: 3, label: 'No sé' },
+      { id: 4, label: 'Prefiero no decir' }
+    ],
+    escala_likert_frecuencia: [
+      { id: 1, label: 'Nunca' },
+      { id: 2, label: 'En pocas ocasiones' },
+      { id: 3, label: 'En algunas ocasiones' },
+      { id: 4, label: 'En varias ocaciones' },
+      { id: 5, label: 'Siempre' }
+    ],
+    escala_likert_intensidad: [
+      { id: 1, label: 'Nada' },
+      { id: 2, label: 'Poco' },
+      { id: 3, label: 'Medio' },
+      { id: 4, label: 'Mucho' },
+      { id: 5, label: 'Demasiado' }
+    ]
+  };
+
+
+  // Función para manejar cambios en los inputs
+  const handleInputChange = (e, fieldName) => {
+    if (e.target) {
+      // Manejo para inputs estándar
+      const { name, value } = e.target;
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: value
+      }));
+    } else {
+      // Manejo para react-select
+      setFormData((prevData) => ({
+        ...prevData,
+        [fieldName]: e ? e.id : '' // Actualiza el estado con el ID seleccionado o vacío si se limpia
+      }));
+    }
+  };
+
+  // Función para manejar el envío del formulario
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    // Convertir todos los valores a números donde corresponda
+    const body = {
+      id_organizacion: parseInt(id_organizacion),
+      apellidos: formData.apellidos,
+      nombres: formData.nombres,
+      edad: parseInt(formData.edad),
+      id_genero: parseInt(formData.id_genero),
+      id_rol_organizacion: parseInt(formData.id_rol_organizacion),
+      anos_organizacion: parseInt(formData.anos_organizacion),
+      horas_semanales: parseInt(formData.horas_semanales),
+      id_porcentaje_trabajo_remoto: parseInt(formData.id_porcentaje_trabajo_remoto),
+      id_nivel_placer_interes: parseInt(formData.id_nivel_placer_interes),
+      id_nivel_tristeza_desesperanza: parseInt(formData.id_nivel_tristeza_desesperanza),
+      id_nivel_problemas_sueno: parseInt(formData.id_nivel_problemas_sueno),
+      id_nivel_disminucion_energia: parseInt(formData.id_nivel_disminucion_energia),
+      id_nivel_cambio_apetito: parseInt(formData.id_nivel_cambio_apetito),
+      id_nivel_decepcion_personal: parseInt(formData.id_nivel_decepcion_personal),
+      id_nivel_problemas_concentracion: parseInt(formData.id_nivel_problemas_concentracion),
+      id_nivel_movimientos_involuntarios: parseInt(formData.id_nivel_movimientos_involuntarios),
+      id_nivel_tentacion_no_levantarse: parseInt(formData.id_nivel_tentacion_no_levantarse),
+      id_frecuencia_limitacion_convivencia: parseInt(formData.id_frecuencia_limitacion_convivencia),
+      id_frecuencia_desacreditar_profesionalismo: parseInt(formData.id_frecuencia_desacreditar_profesionalismo),
+      id_frecuencia_desprestigio: parseInt(formData.id_frecuencia_desprestigio),
+      id_frecuencia_informar_mal_permanencia: parseInt(formData.id_frecuencia_informar_mal_permanencia),
+      id_nivel_estudios: parseInt(formData.id_nivel_estudios),
+      id_estado_nacimiento: parseInt(formData.id_estado_nacimiento),
+      id_estado_mas_anos: parseInt(formData.id_estado_mas_anos),
+      id_estado_civil_padres: parseInt(formData.id_estado_civil_padres),
+      id_familiares_diabetes: parseInt(formData.id_familiares_diabetes),
+      id_familiares_cancer: parseInt(formData.id_familiares_cancer),
+      id_familiares_cerebrovascular: parseInt(formData.id_familiares_cerebrovascular)
+    };
+
+    console.log('[DEBUG] Datos para enviar a la API:', body);
+    
+    
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/v1/encuestas/laboral-salud-mental/respuestas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      if (response.ok) {
+        alert('Formulario enviado con éxito');
+      } else {
+        alert('Error al enviar el formulario');
+      }
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+      alert('Error al enviar el formulario');
+    }
+  };
+  
+
+  return (
+    <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+      <h2 className="text-2xl font-bold mb-6 text-gray-800">Acercándote.org - Encuesta de salud mental y condiciones laborales</h2>
+      
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Datos básicos del empleado */}
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <h3 className="text-lg font-semibold mb-4 text-gray-700">Datos Básicos</h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Apellidos</label>
+              <input
+                type="text"
+                name="apellidos"
+                value={formData.apellidos}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Nombres</label>
+              <input
+                type="text"
+                name="nombres"
+                value={formData.nombres}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                required
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Edad
+              </label>
+              <input
+                type="number"
+                name="edad"
+                value={formData.edad}
+                onChange={handleInputChange}
+                onBlur={(e) => {
+                  const value = parseInt(e.target.value, 10);
+                  if (value < 14 || value > 99) {
+                    alert("La edad debe estar entre 14 y 99 años.");
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      edad: "",
+                    }));
+                  }
+                }}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Género
+              </label>
+              <select
+                name="id_genero"
+                value={formData.id_genero}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Seleccionar...</option>
+                {opciones.genero.map(opcion => (
+                  <option key={opcion.id} value={opcion.id}>{opcion.label}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Información laboral */}
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <h3 className="text-lg font-semibold mb-4 text-gray-700">Información Laboral</h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Rol en la Organización
+              </label>
+              <Select
+                options={opciones.rol_organizacion}
+                getOptionLabel={(e) => e.label}
+                getOptionValue={(e) => e.id}
+                value={opciones.rol_organizacion.find(
+                  (opcion) => opcion.id === formData.id_rol_organizacion
+                )} // Sincroniza el valor seleccionado con el estado
+                onChange={(selectedOption) =>
+                  setFormData((prevData) => ({
+                    ...prevData,
+                    id_rol_organizacion: selectedOption ? selectedOption.id : ''
+                  }))
+                } // Actualiza el estado al seleccionar una opción
+                placeholder="Buscar..."
+                className="w-full"
+                isClearable
+                required
+              />
+            </div>
+            
+
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Años en la Organización
+              </label>
+              <input
+                type="number"
+                name="anos_organizacion"
+                value={formData.anos_organizacion}
+                onChange={handleInputChange}
+                onBlur={(e) => {
+                  const value = parseInt(e.target.value, 10);
+                  if (value < 0 || value > 60) {
+                    alert("La edad debe estar entre 0 y 60 años.");
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      edad: "",
+                    }));
+                  }
+                }}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Horas trabajadas por semana
+              </label>
+              <input
+                type="number"
+                name="horas_semanales"
+                value={formData.horas_semanales}
+                onChange={handleInputChange}
+                onBlur={(e) => {
+                  const value = parseInt(e.target.value, 10);
+                  if (value < 1 || value > 112) {
+                    alert("La edad debe estar entre 1 y 112 horas.");
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      edad: "",
+                    }));
+                  }
+                }}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Porcentaje de trabajo remoto
+              </label>
+              <select
+                name="id_porcentaje_trabajo_remoto"
+                value={formData.id_porcentaje_trabajo_remoto}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Seleccionar...</option>
+                {opciones.porcentaje_remoto.map(opcion => (
+                  <option key={opcion.id} value={opcion.id}>{opcion.label}</option>
+                ))}
+              </select>              
+            </div>
+          </div>
+        </div>
+
+        {/* Preguntas de salud mental */}
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <h3 className="text-lg font-semibold mb-4 text-gray-700">Evaluación de Bienestar</h3>
+          
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                ¿Qué nivel de placer o interés experimentas hacia las diferentes actividades o cosas?
+              </label>
+              <select
+                name="id_nivel_placer_interes"
+                value={formData.id_nivel_placer_interes}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Seleccionar...</option>
+                {opciones.escala_likert_intensidad.map(opcion => (
+                  <option key={opcion.id} value={opcion.id}>{opcion.label}</option>
+                ))}
+              </select>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                ¿Ha sentido alguna vez tristeza profunda, desesperanza o falta de motivación?
+              </label>
+              <select
+                name="id_nivel_tristeza_desesperanza"
+                value={formData.id_nivel_tristeza_desesperanza}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Seleccionar...</option>
+                {opciones.escala_likert_intensidad.map(opcion => (
+                  <option key={opcion.id} value={opcion.id}>{opcion.label}</option>
+                ))}
+              </select>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                ¿Ha tenido problemas para conciliar el sueño, mantenerse dormido(a) o ha dormido en exceso?
+              </label>
+              <select
+                name="id_nivel_problemas_sueno"
+                value={formData.id_nivel_problemas_sueno}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Seleccionar...</option>
+                {opciones.escala_likert_intensidad.map(opcion => (
+                  <option key={opcion.id} value={opcion.id}>{opcion.label}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                ¿Ha notado una disminución en sus niveles de energía o se siente fatigado(a)?
+              </label>
+              <select
+                name="id_nivel_disminucion_energia"
+                value={formData.id_nivel_disminucion_energia}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Seleccionar...</option>
+                {opciones.escala_likert_intensidad.map(opcion => (
+                  <option key={opcion.id} value={opcion.id}>{opcion.label}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                ¿Notas que tu apetito ha cambiado?
+              </label>
+              <select
+                name="id_nivel_cambio_apetito"
+                value={formData.id_nivel_cambio_apetito}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Seleccionar...</option>
+                {opciones.escala_likert_intensidad.map(opcion => (
+                  <option key={opcion.id} value={opcion.id}>{opcion.label}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                ¿Te has sentido decepcionado contigo mismo, o crees que has fallado a tus seres queridos?
+              </label>
+              <select
+                name="id_nivel_decepcion_personal"
+                value={formData.id_nivel_decepcion_personal}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Seleccionar...</option>
+                {opciones.escala_likert_intensidad.map(opcion => (
+                  <option key={opcion.id} value={opcion.id}>{opcion.label}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                ¿Tienes problemas para mantener la concentración en tareas como leer o ver la tele?
+              </label>
+              <select
+                name="id_nivel_problemas_concentracion"
+                value={formData.id_nivel_problemas_concentracion}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Seleccionar...</option>
+                {opciones.escala_likert_intensidad.map(opcion => (
+                  <option key={opcion.id} value={opcion.id}>{opcion.label}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                ¿Experimentas movimientos involuntarios, como temblores musculares o tics?
+              </label>
+              <select
+                name="id_nivel_movimientos_involuntarios"
+                value={formData.id_nivel_movimientos_involuntarios}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Seleccionar...</option>
+                {opciones.escala_likert_intensidad.map(opcion => (
+                  <option key={opcion.id} value={opcion.id}>{opcion.label}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                ¿Te resulta tentador no levantarte por la mañana?
+              </label>
+              <select
+                name="id_nivel_tentacion_no_levantarse"
+                value={formData.id_nivel_tentacion_no_levantarse}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Seleccionar...</option>
+                {opciones.escala_likert_intensidad.map(opcion => (
+                  <option key={opcion.id} value={opcion.id}>{opcion.label}</option>
+                ))}
+              </select>
+            </div>
+          </div>  
+        </div>
+
+        {/* Preguntas laborales específicas */}
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <h3 className="text-lg font-semibold mb-4 text-gray-700">Ambiente Laboral</h3>
+          
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                ¿Alguno de sus compañeros de trabajo le han pedido que se limite solo a trabajar y no conviva con sus compañeros?
+              </label>
+              <select
+                name="id_frecuencia_limitacion_convivencia"
+                value={formData.id_frecuencia_limitacion_convivencia}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Seleccionar...</option>
+                {opciones.escala_likert_frecuencia.map(opcion => (
+                  <option key={opcion.id} value={opcion.id}>{opcion.label}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                ¿Alguno de sus compañeros de trabajo ha desacreditado su profesionalismo o su capacidad laboral?
+              </label>
+              <select
+                name="id_frecuencia_desacreditar_profesionalismo"
+                value={formData.id_frecuencia_desacreditar_profesionalismo}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Seleccionar...</option>
+                {opciones.escala_likert_frecuencia.map(opcion => (
+                  <option key={opcion.id} value={opcion.id}>{opcion.label}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                ¿Alguno de sus compañeros la ha desprestigiado?
+              </label>
+              <select
+                name="id_frecuencia_desprestigio"
+                value={formData.id_frecuencia_desprestigio}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Seleccionar...</option>
+                {opciones.escala_likert_frecuencia.map(opcion => (
+                  <option key={opcion.id} value={opcion.id}>{opcion.label}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                ¿Informan mal sobre su permanencia y dedicación hacia su trabajo?
+              </label>
+              <select
+                name="id_frecuencia_informar_mal_permanencia"
+                value={formData.id_frecuencia_informar_mal_permanencia}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Seleccionar...</option>
+                {opciones.escala_likert_frecuencia.map(opcion => (
+                  <option key={opcion.id} value={opcion.id}>{opcion.label}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Información personal y familiar */}
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <h3 className="text-lg font-semibold mb-4 text-gray-700">Información Personal y Familiar</h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                ¿Cuál es su nivel de estudios?
+              </label>
+              <select
+                name="id_nivel_estudios"
+                value={formData.id_nivel_estudios}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Seleccionar...</option>
+                {opciones.nivel_estudios.map(opcion => (
+                  <option key={opcion.id} value={opcion.id}>{opcion.label}</option>
+                ))}
+              </select>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                ¿En qué estado de la república nació?
+              </label>
+                <select
+                name="id_estado_nacimiento"
+                value={formData.id_estado_nacimiento}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Seleccionar...</option>
+                {opciones.estados_mexico.map(opcion => (
+                  <option key={opcion.id} value={opcion.id}>{opcion.label}</option>
+                ))}
+              </select>    
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                ¿En qué estado de la república ha vivido más años?
+              </label>
+                <select
+                name="id_estado_mas_anos"
+                value={formData.id_estado_mas_anos}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Seleccionar...</option>
+                {opciones.estados_mexico.map(opcion => (
+                  <option key={opcion.id} value={opcion.id}>{opcion.label}</option>
+                ))}
+              </select>   
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                ¿Cuál es o era el estado civil de sus padres?
+              </label>
+              <select
+                name="id_estado_civil_padres"
+                value={formData.id_estado_civil_padres}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Seleccionar...</option>
+                {opciones.estado_civil_padres.map(opcion => (
+                  <option key={opcion.id} value={opcion.id}>{opcion.label}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Antecedentes familiares de salud */}
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <h3 className="text-lg font-semibold mb-4 text-gray-700">Antecedentes Familiares de Salud</h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                ¿Alguno de sus familiares cercanos ha tenido diabetes?
+              </label>
+              <select
+                name="id_familiares_diabetes"
+                value={formData.id_familiares_diabetes}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Seleccionar...</option>
+                {opciones.respuestas_si_no.map(opcion => (
+                  <option key={opcion.id} value={opcion.id}>{opcion.label}</option>
+                ))}
+              </select>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                ¿Alguno de sus familiares cercanos ha tenido cáncer?
+              </label>
+              <select
+                name="id_familiares_cancer"
+                value={formData.id_familiares_cancer}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Seleccionar...</option>
+                {opciones.respuestas_si_no.map(opcion => (
+                  <option key={opcion.id} value={opcion.id}>{opcion.label}</option>
+                ))}
+              </select>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                ¿Alguno de sus familiares cercanos ha tenido enfermedades cerebro vasculares?
+              </label>
+              <select
+                name="id_familiares_cerebrovascular"
+                value={formData.id_familiares_cerebrovascular}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Seleccionar...</option>
+                {opciones.respuestas_si_no.map(opcion => (
+                  <option key={opcion.id} value={opcion.id}>{opcion.label}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Botón de envío */}
+        <div className="flex justify-center pt-6">
+          <button
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition duration-200 ease-in-out transform hover:scale-105"
+          >
+            Enviar Encuesta
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default SurveyForm;
