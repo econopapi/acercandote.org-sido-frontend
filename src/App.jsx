@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import CreatableSelect from 'react-select/creatable';
 import Select from 'react-select';
 
 const SurveyForm = () => {
-  const { id_organizacion } = useParams();
   // Estado inicial del formulario
   const [formData, setFormData] = useState({
+    id_organizacion: '',
     apellidos: '',
     nombres: '',
     edad: '',
@@ -30,6 +30,7 @@ const SurveyForm = () => {
     id_nivel_estudios: '',
     id_estado_nacimiento: '',
     id_estado_mas_anos: '',
+    id_municipio: '',
     id_estado_civil_padres: '',
     id_familiares_diabetes: '',
     id_familiares_cancer: '',
@@ -39,6 +40,11 @@ const SurveyForm = () => {
   // Estado para controlar la sección activa
   const [activeSection, setActiveSection] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [rolesOrganizacion, setRolesOrganizacion] = useState([]);
+  const [organizaciones, setOrganizaciones] = useState([]);
+  const [estadosMexico, setEstadosMexico] = useState([]);
+  const [municipiosMexico, setMunicipiosMexico] = useState([]);
+  const [loadingMunicipios, setLoadingMunicipios] = useState(false);
 
   // Opciones para los campos de selección
   const opciones = {
@@ -48,190 +54,6 @@ const SurveyForm = () => {
       { id: 3, label: 'No binario' },
       { id: 4, label: 'Prefiero no decir' }
     ],
-    rol_organizacion: [
-        { id: 1, label: 'Ejecutivos en jefe' },
-        { id: 2, label: 'Gerentes generales y de operaciones' },
-        { id: 3, label: 'Gerentes de servicios administrativos' },
-        { id: 4, label: 'Gerentes de recursos humanos' },
-        { id: 5, label: 'Gerentes de publicidad y promociones' },
-        { id: 6, label: 'Gerentes de compras' },
-        { id: 7, label: 'Gerentes de compensaciones y beneficios' },
-        { id: 8, label: 'Gerentes de relaciones públicas y recaudación de fondos' },
-        { id: 9, label: 'Gerentes de transporte, almacenamiento y distribución' },
-        { id: 10, label: 'Gerentes financieros' },
-        { id: 11, label: 'Directores de servicios médicos y de salud' },
-        { id: 12, label: 'Directores de manejo de emergencias' },
-        { id: 13, label: 'Gerentes, misceláneos' },
-        { id: 14, label: 'Directores de servicios sociales y comunitarios' },
-        { id: 15, label: 'Administradores educativos' },
-        { id: 16, label: 'Gerentes de capacitación y desarrollo' },
-        { id: 18, label: 'Oficiales superiores de las fuerzas armadas de operaciones especiales y tácticas' },
-        { id: 19, label: 'Jueces, magistrados y otros trabajadores judiciales' },
-        { id: 20, label: 'Gerentes de establecimientos agrícolas, ganaderos y de otras actividades agrícolas' },
-        { id: 21, label: 'Gerentes de producción industrial' },
-        { id: 22, label: 'Gerentes, misceláneos' },
-        { id: 23, label: 'Gerentes de construcción' },
-        { id: 24, label: 'Directores de arquitectura e ingeniería' },
-        { id: 25, label: 'Administradores educativos' },
-        { id: 26, label: 'Gerentes de capacitación y desarrollo' },
-        { id: 27, label: 'Asesores en gerencia de granjas y hogares' },
-        { id: 28, label: 'Trabajadores de recursos humanos' },
-        { id: 29, label: 'Especialistas en logística' },
-        { id: 30, label: 'Analistas de gestión' },
-        { id: 31, label: 'Compradores y agentes de compras' },
-        { id: 32, label: 'Especialistas en compensaciones, beneficios y análisis ocupacional' },
-        { id: 33, label: 'Analistas de investigación de mercado y especialistas en mercadeo' },
-        { id: 34, label: 'Investigadores de encuestas' },
-        { id: 35, label: 'Especialistas en relaciones públicas' },
-        { id: 36, label: 'Contadores y auditores' },
-        { id: 37, label: 'Analistas de presupuesto' },
-        { id: 38, label: 'Asesores de crédito y oficiales de préstamo' },
-        { id: 39, label: 'Examinadores, cobradores y preparadores de impuestos y agentes de rentas' },
-        { id: 40, label: 'Analistas y asesores financieros' },
-        { id: 41, label: 'Examinadores financieros' },
-        { id: 42, label: 'Especialistas financieros, misceláneos' },
-        { id: 43, label: 'Economistas' },
-        { id: 44, label: 'Científicos sociales y trabajadores relacionados, misceláneos' },
-        { id: 45, label: 'Sociólogos' },
-        { id: 46, label: 'Planificadores urbanos y regionales' },
-        { id: 47, label: 'Abogados y oficiales jurídicos' },
-        { id: 48, label: 'Asistentes legales y asistentes de abogados' },
-        { id: 49, label: 'Psicólogos' },
-        { id: 50, label: 'Trabajadores sociales' },
-        { id: 51, label: 'Archiveros, curadores y técnicos de museo' },
-        { id: 52, label: 'Bibliotecarios' },
-        { id: 53, label: 'Clérigos' },
-        { id: 54, label: 'Escritores, redactores y editores' },
-        { id: 55, label: 'Escritores, redactores y editores' },
-        { id: 56, label: 'Analistas, reporteros y corresponsales de noticias' },
-        { id: 57, label: 'Trabajadores de medios de difusión y comunicación, misceláneos' },
-        { id: 58, label: 'Artistas y trabajadores relacionados' },
-        { id: 59, label: 'Diseñadores' },
-        { id: 60, label: 'Astrónomos y físicos' },
-        { id: 61, label: 'Científicos físicos, misceláneos' },
-        { id: 62, label: 'Actuarios' },
-        { id: 63, label: 'Estadísticos' },
-        { id: 64, label: 'Matemáticos' },
-        { id: 65, label: 'Analistas de operaciones de investigación' },
-        { id: 66, label: 'Ocupaciones relacionadas con las ciencias matemáticas, misceláneos' },
-        { id: 67, label: 'Científicos especializados en biología' },
-        { id: 68, label: 'Tecnólogos y técnicos de laboratorio clínico' },
-        { id: 69, label: 'Científicos del medioambiente y de la geociencia' },
-        { id: 70, label: 'Científicos especializados en ciencias biológicas, misceláneos' },
-        { id: 71, label: 'Químicos y científicos de materiales' },
-        { id: 72, label: 'Científicos atmosféricos y espaciales' },
-        { id: 73, label: 'Científicos especializados en conservación y silvicultores' },
-        { id: 74, label: 'Científicos especializados en agricultura y alimentos' },
-        { id: 75, label: 'Ingenieros agrónomos' },
-        { id: 76, label: 'Científicos especializados en agricultura y alimentos' },
-        { id: 77, label: 'Veterinarios' },
-        { id: 78, label: 'Científicos especializados en conservación y silvicultores' },
-        { id: 79, label: 'Científicos especializados en biología' },
-        { id: 80, label: 'Ingenieros eléctricos y electrónicos' },
-        { id: 81, label: 'Ingenieros mecánicos' },
-        { id: 82, label: 'Ingenieros eléctricos y electrónicos' },
-        { id: 83, label: 'Ingenieros químicos' },
-        { id: 84, label: 'Ingenieros mecánicos' },
-        { id: 85, label: 'Ingenieros aeroespaciales' },
-        { id: 86, label: 'Ingenieros marítimos y arquitectos navales' },
-        { id: 87, label: 'Ingenieros industriales, incluye ingenieros sanitarios y de seguridad' },
-        { id: 88, label: 'Ingenieros de minería y geología, incluye a los ingenieros de seguridad minera' },
-        { id: 89, label: 'Ingenieros petroleros' },
-        { id: 90, label: 'Ingenieros de materiales' },
-        { id: 91, label: 'Ingenieros civiles' },
-        { id: 92, label: 'Agrimensores, cartógrafos y fotogrametristas' },
-        { id: 93, label: 'Ingenieros mecánicos' },
-        { id: 94, label: 'Agrimensores, cartógrafos y fotogrametristas' },
-        { id: 95, label: 'Arquitectos, excepto navales' },
-        { id: 96, label: 'Planificadores urbanos y regionales' },
-        { id: 97, label: 'Investigadores de ciencias de la computación e información' },
-        { id: 98, label: 'Analistas de computación e información' },
-        { id: 99, label: 'Programadores y diseñadores de programas software' },
-        { id: 100, label: 'Ingenieros de computadoras' },
-        { id: 101, label: 'Administradores de bases de datos y sistemas y diseñadores de redes informáticas' },
-        { id: 102, label: 'Especialistas en apoyo técnico de computadoras' },
-        { id: 103, label: 'Ingenieros de computadoras' },
-        { id: 104, label: 'Ingenieros eléctricos y electrónicos' },
-        { id: 105, label: 'Funcionarios de cumplimiento' },
-        { id: 106, label: 'Consejeros' },
-        { id: 107, label: 'Maestros de escuela secundaria' },
-        { id: 108, label: 'Maestros de escuela primaria y escuela de nivel medio' },
-        { id: 109, label: 'Maestros e instructores de educación básica, secundaria y de alfabetización para adultos' },
-        { id: 110, label: 'Maestros de nivel preescolar y jardín de infantes' },
-        { id: 111, label: 'Profesores universitarios y de enseñanza superior' },
-        { id: 112, label: 'Médicos y cirujanos' },
-        { id: 113, label: 'Asistentes médicos' },
-        { id: 114, label: 'Médicos y cirujanos' },
-        { id: 115, label: 'Dentistas' },
-        { id: 116, label: 'Ingenieros biomédicos' },
-        { id: 117, label: 'Optómetras' },
-        { id: 118, label: 'Dietistas y nutricionistas' },
-        { id: 119, label: 'Ingenieros industriales, incluye ingenieros sanitarios y de seguridad' },
-        { id: 120, label: 'Científicos médicos' },
-        { id: 121, label: 'Profesionales de diagnóstico y tratamiento médico, misceláneos' },
-        { id: 122, label: 'Enfermeros anestesistas' },
-        { id: 123, label: 'Enfermeros de partos' },
-        { id: 124, label: 'Enfermeros médicos' },
-        { id: 125, label: 'Enfermeros graduados' },
-        { id: 126, label: 'Terapistas' },
-        { id: 127, label: 'Audiológos' },
-        { id: 128, label: 'Farmacéuticos' },
-        { id: 129, label: 'Investigadores de encuestas' },
-        { id: 130, label: 'Estimadores de costos' },
-        { id: 131, label: 'Recaudadores de fondos' },
-        { id: 132, label: 'Oficinistas auxiliares de compras' },
-        { id: 133, label: 'Asistentes de recursos humanos, excepto de nómina y de registro de horas' },
-        { id: 134, label: 'Oficinistas de producción, planificación y expedición' },
-        { id: 135, label: 'Oficinistas de procesamiento de reclamaciones y pólizas de seguro' },
-        { id: 136, label: 'Oficinistas de nómina y de registro de horas trabajadas' },
-        { id: 137, label: 'Analistas de crédito' },
-        { id: 138, label: 'Asesores de crédito y oficiales de préstamo' },
-        { id: 139, label: 'Examinadores, cobradores y preparadores de impuestos y agentes de rentas' },
-        { id: 140, label: 'Autorizadores, verificadores y empleados de crédito' },
-        { id: 141, label: 'Entrevistadores y empleados de préstamos financieros' },
-        { id: 142, label: 'Oficinistas de corretaje' },
-        { id: 143, label: 'Empleados de teneduría de libros, contabilidad y auditoría' },
-        { id: 144, label: 'Oficinistas de facturación y registro de facturas' },
-        { id: 145, label: 'Agentes de carga y flete' },
-        { id: 146, label: 'Ajustadores, tasadores, examinadores e investigadores de reclamaciones' },
-        { id: 147, label: 'Tasadores y especialistas en valoración de bienes raíces' },
-        { id: 148, label: 'Propietario de negocio' },
-        { id: 149, label: 'Otro' }
-      ],
-      estados_mexico: [
-        { id: 1, label: 'Aguascalientes' },
-        { id: 2, label: 'Baja California' },
-        { id: 3, label: 'Baja California Sur' },
-        { id: 4, label: 'Campeche' },
-        { id: 5, label: 'Chiapas' },
-        { id: 6, label: 'Chihuahua' },
-        { id: 7, label: 'Ciudad de México' },
-        { id: 8, label: 'Coahuila de Zaragoza' },
-        { id: 9, label: 'Colima' },
-        { id: 10, label: 'Durango' },
-        { id: 11, label: 'Estado de México' },
-        { id: 12, label: 'Guanajuato' },
-        { id: 13, label: 'Guerrero' },
-        { id: 14, label: 'Hidalgo' },
-        { id: 15, label: 'Jalisco' },
-        { id: 16, label: 'Michoacán de Ocampo' },
-        { id: 17, label: 'Morelos' },
-        { id: 18, label: 'Nayarit' },
-        { id: 19, label: 'Nuevo León' },
-        { id: 20, label: 'Oaxaca' },
-        { id: 21, label: 'Puebla' },
-        { id: 22, label: 'Querétaro' },
-        { id: 23, label: 'Quintana Roo' },
-        { id: 24, label: 'San Luis Potosí' },
-        { id: 25, label: 'Sinaloa' },
-        { id: 26, label: 'Sonora' },
-        { id: 27, label: 'Tabasco' },
-        { id: 28, label: 'Tamaulipas' },
-        { id: 29, label: 'Tlaxcala' },
-        { id: 30, label: 'Veracruz de Ignacio de la Llave' },
-        { id: 31, label: 'Yucatán' },
-        { id: 32, label: 'Zacatecas' }
-      ],
     porcentaje_remoto: [
       { id: 1, label: '0%' },
       { id: 2, label: '10%' },
@@ -280,6 +102,57 @@ const SurveyForm = () => {
     ]
   };
 
+  // Cargar datos desde la API
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+
+        // Cargar organizaciones
+        const organizacionesResponse = await fetch(`${import.meta.env.VITE_API_URL}/encuestas/laboral-salud-mental/preguntas/organizaciones`);
+        if (organizacionesResponse.ok) {
+          const organizacionesData = await organizacionesResponse.json();
+          const organizacionesFormateadas = organizacionesData.organizaciones.map(org => ({
+            id: org.id,
+            label: org.nombre
+          }));
+          setOrganizaciones(organizacionesFormateadas);
+        } else {
+          console.error('Error al cargar organizaciones');
+        }
+
+        // Cargar roles de organización
+        const rolesResponse = await fetch(`${import.meta.env.VITE_API_URL}/encuestas/laboral-salud-mental/preguntas/roles-organizacion`);
+        if (rolesResponse.ok) {
+          const rolesData = await rolesResponse.json();
+          const rolesFormateados = rolesData.roles.map(role => ({
+            id: role.id,
+            label: role.nombre
+          }));
+          setRolesOrganizacion(rolesFormateados);
+        } else {
+          console.error('Error al cargar roles de organización');
+        }
+
+        // Cargar estados de México
+        const estadosResponse = await fetch(`${import.meta.env.VITE_API_URL}/encuestas/laboral-salud-mental/preguntas/estados-mexico`);
+        if (estadosResponse.ok) {
+          const estadosData = await estadosResponse.json();
+          const estadosFormateados = estadosData.estados.map(estado => ({
+            id: estado.id,
+            label: estado.nombre
+          }));
+          setEstadosMexico(estadosFormateados);
+        } else {
+          console.error('Error al cargar estados de México');
+        }
+      } catch (error) {
+        console.error('Error en la solicitud de datos:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   // Secciones del formulario
   const sections = [
     { title: "Datos Básicos", icon: "👤" },
@@ -291,6 +164,35 @@ const SurveyForm = () => {
     { title: "Revisión", icon: "📋" }
   ];
 
+  // Función para cargar municipios basados en el estado seleccionado
+  const cargarMunicipios = async (estadoId) => {
+    if (!estadoId) {
+      setMunicipiosMexico([]);
+      return;
+    }
+    
+    setLoadingMunicipios(true);
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/encuestas/laboral-salud-mental/preguntas/municipios-mexico?estado=${estadoId}`);
+      if (response.ok) {
+        const data = await response.json();
+        const municipiosFormateados = data.municipios.map(municipio => ({
+          id: municipio.id,
+          label: municipio.nombre
+        }));
+        setMunicipiosMexico(municipiosFormateados);
+      } else {
+        console.error('Error al cargar municipios');
+        setMunicipiosMexico([]);
+      }
+    } catch (error) {
+      console.error('Error en la solicitud de municipios:', error);
+      setMunicipiosMexico([]);
+    } finally {
+      setLoadingMunicipios(false);
+    }
+  };
+
   // Función para manejar cambios en los inputs
   const handleInputChange = (e, fieldName) => {
     if (e.target) {
@@ -300,6 +202,17 @@ const SurveyForm = () => {
         ...prevData,
         [name]: value
       }));
+
+      // Si se cambió el estado donde ha vivido más años, cargar municipios
+      if (name === 'id_estado_mas_anos') {
+        cargarMunicipios(value);
+        // Limpiar municipio seleccionado cuando se cambie el estado
+        setFormData((prevData) => ({
+          ...prevData,
+          id_estado_mas_anos: value,
+          id_municipio: ''
+        }));
+      }
     } else {
       // Manejo para react-select
       setFormData((prevData) => ({
@@ -313,10 +226,21 @@ const SurveyForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
+    // Determinar valor de id_organizacion
+    let organizacionValue;
+    const organizacionSeleccionada = organizaciones.find(org => org.id === formData.id_organizacion);
+    if (organizacionSeleccionada) {
+      //organización existente, enviar como int
+      organizacionValue = parseInt(formData.id_organizacion);
+    } else {
+      //nueva organización, enviar como string
+      organizacionValue = formData.id_organizacion;
+    }
+
     // Convertir todos los valores a números donde corresponda
     const body = {
-      id_organizacion: parseInt(id_organizacion),
+      id_organizacion: organizacionValue,
       apellidos: formData.apellidos,
       nombres: formData.nombres,
       edad: parseInt(formData.edad),
@@ -341,6 +265,7 @@ const SurveyForm = () => {
       id_nivel_estudios: parseInt(formData.id_nivel_estudios),
       id_estado_nacimiento: parseInt(formData.id_estado_nacimiento),
       id_estado_mas_anos: parseInt(formData.id_estado_mas_anos),
+      id_municipio: parseInt(formData.id_municipio),
       id_estado_civil_padres: parseInt(formData.id_estado_civil_padres),
       id_familiares_diabetes: parseInt(formData.id_familiares_diabetes),
       id_familiares_cancer: parseInt(formData.id_familiares_cancer),
@@ -410,7 +335,7 @@ const SurveyForm = () => {
     </div>
 
       <div className="mb-2">
-        <p className="text-lg text-gray-700">Sistema Integral de Diagnóstico Organizacional (SIDP)</p>
+        <p className="text-lg text-gray-700">Sistema Integral de Diagnóstico Organizacional (SIDO)</p>
       </div>
 
       
@@ -517,6 +442,72 @@ const renderNavigation = () => (
                 </h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                  {/* Campo de Organización con CreatableSelect */}
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Organización</label>
+                    <CreatableSelect
+                      options={organizaciones}
+                      getOptionLabel={(e) => e.label}
+                      getOptionValue={(e) => e.id}
+                      value={
+                        // Verificar si es organización existente o nueva
+                        organizaciones.find(org => org.id === formData.id_organizacion) || 
+                        (formData.id_organizacion && typeof formData.id_organizacion === 'string' ? 
+                          { id: formData.id_organizacion, label: formData.id_organizacion } : null)
+                      }
+                      onChange={(selectedOption) => {
+                        if (selectedOption) {
+                          // Si es una nueva organización creada, el id será el string ingresado
+                          if (selectedOption.__isNew__) {
+                            setFormData((prevData) => ({
+                              ...prevData,
+                              id_organizacion: selectedOption.value
+                            }));
+                          } else {
+                            // Es una organización existente
+                            setFormData((prevData) => ({
+                              ...prevData,
+                              id_organizacion: selectedOption.id
+                            }));
+                          }
+                        } else {
+                          // Se limpió el campo
+                          setFormData((prevData) => ({
+                            ...prevData,
+                            id_organizacion: ''
+                          }));
+                        }
+                      }}
+                      onCreateOption={(inputValue) => {
+                        // Cuando se crea una nueva opción
+                        setFormData((prevData) => ({
+                          ...prevData,
+                          id_organizacion: inputValue
+                        }));
+                      }}
+                      formatCreateLabel={(inputValue) => `Crear organización: "${inputValue}"`}
+                      placeholder="Buscar o crear organización..."
+                      className="w-full"
+                      styles={{
+                        control: (base) => ({
+                          ...base,
+                          padding: '0.5rem',
+                          borderRadius: '0.5rem',
+                          border: '1px solid #D1D5DB',
+                          '&:hover': { borderColor: '#D1D5DB' }
+                        })
+                      }}
+                      isClearable
+                      isLoading={organizaciones.length === 0}
+                      required
+                      noOptionsMessage={({ inputValue }) => 
+                        inputValue ? `Presiona Enter para crear "${inputValue}"` : 'Escribe para buscar organizaciones'
+                      }
+                      createOptionPosition="first"
+                    />
+                  </div>
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Apellidos</label>
                     <input
@@ -593,10 +584,10 @@ const renderNavigation = () => (
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Rol en la Organización</label>
                     <Select
-                      options={opciones.rol_organizacion}
+                      options={rolesOrganizacion}
                       getOptionLabel={(e) => e.label}
                       getOptionValue={(e) => e.id}
-                      value={opciones.rol_organizacion.find(
+                      value={rolesOrganizacion.find(
                         (opcion) => opcion.id === formData.id_rol_organizacion
                       )}
                       onChange={(selectedOption) =>
@@ -617,6 +608,7 @@ const renderNavigation = () => (
                         })
                       }}
                       isClearable
+                      isLoading={rolesOrganizacion.length === 0}
                       required
                     />
                   </div>
@@ -858,7 +850,7 @@ const renderNavigation = () => (
                       required
                     >
                       <option value="">Seleccionar...</option>
-                      {opciones.estados_mexico.map(opcion => (
+                      {estadosMexico.map(opcion => (
                         <option key={opcion.id} value={opcion.id}>{opcion.label}</option>
                       ))}
                     </select>    
@@ -874,11 +866,40 @@ const renderNavigation = () => (
                       required
                     >
                       <option value="">Seleccionar...</option>
-                      {opciones.estados_mexico.map(opcion => (
+                      {estadosMexico.map(opcion => (
                         <option key={opcion.id} value={opcion.id}>{opcion.label}</option>
                       ))}
                     </select>   
                   </div>
+
+                  {/* Nuevo campo para municipio */}
+                  {formData.id_estado_mas_anos && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Municipio donde ha vivido más años</label>
+                    {loadingMunicipios ? (
+                      <div className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 flex items-center">
+                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Cargando municipios...
+                      </div>
+                    ) : (
+                      <select
+                        name="id_municipio"
+                        value={formData.id_municipio}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                        required
+                      >
+                        <option value="">Seleccionar municipio...</option>
+                        {municipiosMexico.map(opcion => (
+                          <option key={opcion.id} value={opcion.id}>{opcion.label}</option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
+                )}
                   
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Estado civil de sus padres</label>
@@ -965,7 +986,7 @@ const renderNavigation = () => (
                     <div><strong>Apellidos:</strong> {formData.apellidos}</div>
                     <div><strong>Edad:</strong> {formData.edad}</div>
                     <div><strong>Género:</strong> {opciones.genero.find(g => g.id === parseInt(formData.id_genero))?.label || 'No especificado'}</div>
-                    <div><strong>Rol en la organización:</strong> {opciones.rol_organizacion.find(r => r.id === parseInt(formData.id_rol_organizacion))?.label || 'No especificado'}</div>
+                    <div><strong>Rol en la organización:</strong> {rolesOrganizacion.find(r => r.id === parseInt(formData.id_rol_organizacion))?.label || 'No especificado'}</div>
                     <div><strong>Años en la organización:</strong> {formData.anos_organizacion}</div>
                   </div>
                 </div>
