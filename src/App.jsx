@@ -841,7 +841,7 @@ const renderNavigation = () => (
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Estado de nacimiento</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Lugar de nacimiento</label>
                     <select
                       name="id_estado_nacimiento"
                       value={formData.id_estado_nacimiento}
@@ -857,7 +857,7 @@ const renderNavigation = () => (
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Estado donde ha vivido más años</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Lugar donde ha vivido más años</label>
                     <select
                       name="id_estado_mas_anos"
                       value={formData.id_estado_mas_anos}
@@ -1013,7 +1013,7 @@ const renderNavigation = () => (
           </form>
         </div>
         <div className="bg-gray-100 text-center py-4 text-sm text-gray-600">
-          Desarrollo: <a href="https://dlimon.net" target="_blank">Daniel Limón</a> en colaboración con <a href="https://acercandote.org" target="_blank">Acercandote.org</a>
+          Desarrollado por <a href="https://dlimon.net" target="_blank">Daniel Limón</a> en colaboración con <a href="https://acercandote.org" target="_blank">Acercandote.org</a>
         </div>
       </div>
     </div>
